@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste</title>
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.css" />
+    <!-- CodeMirror Monokai Theme -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/theme/monokai.min.css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        .content {
+            width: 100%;
+            max-height: calc(100vh - 40px);
+            display: flex;
+            gap: 30px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+            width: 100%;
+            max-width: calc(50% - 15px);
+            max-height: calc(100vh - 40px);
+            flex: 1;
+            gap: 20px;
+        }
+        .editor-container {
+            flex: 1;
+            max-width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-width: 300px;
+            height: calc(50% - 20px);
+        }
+        .editor-label {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+        .CodeMirror {
+            padding-bottom: 20px;
+            height: 200px !important;
+            border-radius: 7px;
+            font-size: 15px;
+            border: 1px solid #444;
+            flex: 1;
+        }
+        #runButton {
+            padding: 10px 20px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 16px;
+            align-self: flex-start;
+        }
+        #runButton:hover {
+            background-color: #444;
+        }
+        .output-container {
+            flex: 1;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            height: calc(100vh - 40px);
+            min-width: 300px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 3px 5px 20px #464646;
+        }
+        #outputFrame {
+            width: 100%;
+            flex: 1;
+            border: none;
+        }
+        #output-tools {
+            border-top: 1px solid #ccc;
+            background-color: #eee;
+            /* width: 100%; */
+            display: flex;
+            justify-content: end;
+            align-items: center;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- <h1>Interactive Code Editor</h1> -->
+    <div class="content">
+        <div class="container">
+            <div class="editor-container">
+                <label class="editor-label">Estrutura (HTML)</label>
+                <textarea id="htmlEditor"></textarea>
+            </div>
+            <div class="editor-container">
+                <label class="editor-label">Estilo (CSS)</label>
+                <textarea id="cssEditor"></textarea>
+            </div>
+        </div>
+
+        <div class="output-container">
+            <iframe id="outputFrame"></iframe>
+            <div id="output-tools">
+                <button id="runButton">Executar</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- CodeMirror JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/mode/css/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/mode/javascript/javascript.min.js"></script>
+    <script>
+        // Inicializa os editores CodeMirror com tema Monokai
+        const htmlEditor = CodeMirror.fromTextArea(document.getElementById('htmlEditor'), {
+            mode: 'xml',
+            htmlMode: true,
+            lineNumbers: true,
+            theme: 'monokai'
+        });
+        const cssEditor = CodeMirror.fromTextArea(document.getElementById('cssEditor'), {
+            mode: 'css',
+            lineNumbers: true,
+            theme: 'monokai'
+        });
+
+        // Executa o código
+        const runButton = document.getElementById('runButton');
+        const outputFrame = document.getElementById('outputFrame');
+
+        runButton.addEventListener('click', () => {
+            const htmlCode = htmlEditor.getValue();
+            const cssCode = cssEditor.getValue();
+
+            const doc = outputFrame.contentDocument || outputFrame.contentWindow.document;
+            doc.open();
+            doc.write(
+                '<!DOCTYPE html>' +
+                '<html>' +
+                '<head>' +
+                '<style>' + cssCode + '</style>' +
+                '</head>' +
+                '<body>' +
+                htmlCode +
+                '</body>' +
+                '</html>'
+            );
+            doc.close();
+        });
+    </script>
+</body>
+</html>
